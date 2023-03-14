@@ -1,4 +1,4 @@
-import { Schema, Types } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { IShopsMoongose } from "../shops.type";
 
 const shopsSchema = new Schema<IShopsMoongose>(
@@ -42,4 +42,18 @@ const shopsSchema = new Schema<IShopsMoongose>(
               },
         },
     }
-)   
+);
+
+shopsSchema.set('toJSON', {
+  virtuals: true,
+  getters: true,
+  versionKey: false,
+  transform: (_doc, ret) => {
+    ret.createdAt = _doc.createdAt?.toLocaleString();
+    ret.updatedAt = _doc.updatedAt?.toLocaleString();
+    delete ret._id;
+    delete ret.isDeleted;
+  },
+});
+
+export default model<IShopsMoongose>('Restaurants',shopsSchema);
